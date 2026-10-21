@@ -328,7 +328,8 @@ dash.calc('by_type', {
   description: 'Number of agencies under each way of paying SLPs.',
   fn: (pay) => {
     const order = ['Own SLP schedule', 'Teacher schedule + SLP stipend or %', 'Teacher schedule, no SLP stipend', 'Teacher schedule, stipend unknown', 'Unconfirmed'];
-    return order.map(t => ({ schedule_type: t, n: pay.filter(r => r.schedule_type === t).length })).filter(r => r.n > 0);
+    const types = [...order, ...[...new Set(pay.map(r => r.schedule_type))].filter(t => !order.includes(t))];
+    return types.map(t => ({ schedule_type: t, n: pay.filter(r => r.schedule_type === t).length })).filter(r => r.n > 0);
   }
 });
 
