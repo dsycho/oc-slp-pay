@@ -44,8 +44,8 @@ a { color: inherit; }
 // Small stand-in for the dashboard runtime: data, calculations, filters.
 (function () {
   const calcs = {}, fns = [];
-  let params = { group: 'All', view: 'annual', focus: 'Santa Ana USD' };
-  try { const h = new URLSearchParams(location.hash.slice(1)); ['group','view','focus'].forEach(k => { if (h.get(k)) params[k] = h.get(k); }); } catch (e) {}
+  let params = { group: 'All', view: 'annual', focus: 'Santa Ana USD', sort: 'start' };
+  try { const h = new URLSearchParams(location.hash.slice(1)); ['group','view','focus','sort'].forEach(k => { if (h.get(k)) params[k] = h.get(k); }); } catch (e) {}
   const data = { pay: window.SLP_DATA };
   const run = () => fns.forEach(f => { try { f(); } catch (e) { console.error(e); } });
   window.dash = {
@@ -197,6 +197,12 @@ a { color: inherit; }
       <div class="slp-seg" role="group" aria-label="Chart units">
         <button type="button" data-view="annual" aria-pressed="true">Annual pay</button>
         <button type="button" data-view="perday" aria-pressed="false">Pay per work day</button>
+      </div>
+      <div class="slp-seg slp-sort" role="group" aria-label="Sort the chart by">
+        <span class="slp-ctl">Sort by</span>
+        <button type="button" data-sort="start" aria-pressed="true">Start</button>
+        <button type="button" data-sort="top" aria-pressed="false">Top</button>
+        <button type="button" data-sort="max" aria-pressed="false">Max</button>
       </div>
       <label class="slp-ctl" for="focus-sel">Highlight <select id="focus-sel" data-source="pay"></select></label>
       <span class="slp-filtered" id="filtered-note"></span>
@@ -361,7 +367,7 @@ dash.calc('by_type', {
   });
 
   // ---------- filters: group, view, highlighted district ----------
-  const P = () => { const p = dash.params() || {}; return { group: p.group || 'All', view: p.view || 'annual', focus: p.focus || 'Santa Ana USD' }; };
+  const P = () => { const p = dash.params() || {}; return { group: p.group || 'All', view: p.view || 'annual', focus: p.focus || 'Santa Ana USD', sort: p.sort || 'start' }; };
   const enc = s => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
 
   dash.onData(() => {
@@ -408,10 +414,12 @@ dash.calc('by_type', {
     const btn = e.target.closest('button[data-group]');
     if (btn) dash.setParams({ group: btn.dataset.group });
   });
-  document.querySelectorAll('.slp-seg button').forEach(b => b.addEventListener('click', () => dash.setParams({ view: b.dataset.view })));
+  document.querySelectorAll('.slp-seg button[data-view]').forEach(b => b.addEventListener('click', () => dash.setParams({ view: b.dataset.view })));
+  document.querySelectorAll('.slp-seg button[data-sort]').forEach(b => b.addEventListener('click', () => dash.setParams({ sort: b.dataset.sort })));
   dash.onData(() => {
-    const { view } = P();
-    document.querySelectorAll('.slp-seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    const { view, sort } = P();
+    document.querySelectorAll('.slp-seg button[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    document.querySelectorAll('.slp-seg button[data-sort]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sort === sort)));
     document.getElementById('range-title').textContent = view === 'perday' ? 'Starting to top pay per work day, by district' : 'Starting to top pay, by district';
   });
 
@@ -448,7 +456,7 @@ dash.calc('by_type', {
     if (p.status !== 'ok') { wrap.classList.add('dash-skeleton'); return; }
     wrap.classList.remove('dash-skeleton');
 
-    const { group, view, focus } = P();
+    const { group, view, focus, sort } = P();
     const perDay = view === 'perday';
     const rows = p.data.filter(r => isNum(r.start) && isNum(r.top) && (group === 'All' || r.schedule_type === group) && (!perDay || isNum(r.days)))
       .map(r => {
@@ -456,7 +464,7 @@ dash.calc('by_type', {
         const t = +r.top_with_addon;
         return { ...r, s0: +r.start / dv, s: +r.start_with_addon / dv, t: t / dv, add: isNum(r.slp_addon) ? +r.slp_addon : 0, mx: (isNum(r.max_all) ? Math.max(+r.max_all, t) : t) / dv };
       })
-      .sort((a, b) => b.s - a.s);
+      .sort((a, b) => sort === 'top' ? b.t - a.t : sort === 'max' ? b.mx - a.mx : b.s - a.s);
     if (!rows.length) { wrap.style.minHeight = '4rem'; return; }
     const kfmt = perDay ? (v => '$' + d3.format(',.0f')(v)) : kfmtK;
     const W = Math.max(280, wrap.clientWidth);
