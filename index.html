@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orange County SLP Pay by District</title>
+<meta name="description" content="Compare school speech-language pathologist pay, stipends, caseload caps and duty days across Orange County, California school districts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-fg: #1d2127; --color-fg-muted: #5d6570; --color-bg: #f7f8fa; --color-panel: #ffffff; --color-border-line: #dfe3e8;
+  --color-ok: #1f7a3d; --color-warn: #9a5b00; --color-bad: #b3261e;
+  --cds-chart-grid: #e8ebef; --cds-chart-muted: #b9c0c9; --cds-surface-popover: #ffffff; --cds-border: #d3d8de; --cds-text-secondary: #5d6570;
+  --cds-shadow-popover: 0 4px 16px rgba(20, 30, 45, .14);
+  --font-anthropic-sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-anthropic-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --cds-radius: 10px; --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 12px; --cds-pad-lg: 18px;
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 14px; --cds-gap-lg: 18px; --cds-gap-xl: 28px;
+  --cds-font-size-caption: 13px; --cds-font-size-body: 15px; --cds-font-size-heading: 18px; --cds-font-size-title: 30px; --cds-font-weight-medium: 600;
+  --cds-dur-slow: .3s;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fg: #e8eaed; --color-fg-muted: #a3abb5; --color-bg: #14171b; --color-panel: #1c2026; --color-border-line: #2e343c;
+    --color-ok: #6fcf8f; --color-warn: #e3a64f; --color-bad: #f08a80;
+    --cds-chart-grid: #2a3038; --cds-chart-muted: #59616b; --cds-surface-popover: #232830; --cds-border: #3a414b; --cds-text-secondary: #a3abb5;
+    --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .5);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-body); line-height: 1.45; }
+#dash-root { max-width: 1200px; margin-inline: auto; padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: inherit; }
+.slp-dl { display: inline-flex; align-items: center; gap: 6px; font-size: var(--cds-font-size-body); padding: 4px 12px; border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-panel); text-decoration: none; }
+.slp-dl:hover { border-color: var(--color-fg-muted); }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="data.js"></script>
+<script>
+// Small stand-in for the dashboard runtime: data, calculations, filters.
+(function () {
+  const calcs = {}, fns = [];
+  let params = { group: 'All', view: 'annual', focus: 'Santa Ana USD' };
+  try { const h = new URLSearchParams(location.hash.slice(1)); ['group','view','focus'].forEach(k => { if (h.get(k)) params[k] = h.get(k); }); } catch (e) {}
+  const data = { pay: window.SLP_DATA };
+  const run = () => fns.forEach(f => { try { f(); } catch (e) { console.error(e); } });
+  window.dash = {
+    colors: ['#2f6fd6', '#d9822b', '#2e9e6a', '#8e5bc8', '#c0453a', '#16a0a0', '#7a8592', '#b8860b'],
+    data(id) {
+      if (id in data) return { status: 'ok', data: data[id] };
+      const c = calcs[id];
+      if (c) return { status: 'ok', data: c.fn(...c.inputs.map(i => data[i])) };
+      return { status: 'missing', data: [] };
+    },
+    onData(fn) { fns.push(fn); },
+    calc(id, o) { calcs[id] = o; },
+    params() { return params; },
+    setParams(o) {
+      params = Object.assign({}, params, o);
+      try { history.replaceState(null, '', '#' + new URLSearchParams(params).toString()); } catch (e) {}
+      run();
+    },
+    resetParams() {}, refresh() {}, setLink() {}, loader() {}
+  };
+  window.addEventListener('load', run);
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(run, 150); });
+})();
+</script>
+</head>
+<body>
+<div id="dash-root">
+<style>
+.slp { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); }
+.slp-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); max-width: 62rem; }
+.slp-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.slp-lede { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-body); line-height: 1.55; max-width: 62ch; }
+.slp-lede b, .slp-tile b { font-weight: 600; color: var(--color-fg); }
+.slp-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--cds-gap-md); }
+.slp-tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-xs); min-width: 0; }
+.slp-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.slp-tile-value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.slp-tile-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.45; }
+.slp-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-md); min-width: 0; }
+.slp-card h2 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.slp-note { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; max-width: 80ch; }
+.slp-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
+.slp-mix { display: flex; flex-direction: column; gap: var(--cds-gap-md); min-height: 9rem; }
+.slp-mixbar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; gap: 2px; }
+.slp-mixbar span { display: block; height: 100%; }
+.slp-mixlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--cds-gap-xs); font-size: var(--cds-font-size-body); }
+.slp-mixlist li { display: grid; grid-template-columns: 12px 1fr auto; gap: var(--cds-gap-sm); align-items: center; }
+.slp-sw { width: 10px; height: 10px; border-radius: 3px; }
+.slp-mixlist .n { font-variant-numeric: tabular-nums; color: var(--color-fg-muted); }
+.slp-method { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: var(--cds-gap-xs); font-size: var(--cds-font-size-body); line-height: 1.5; }
+.slp-chartwrap { position: relative; min-height: 32rem; }
+.slp-chartwrap svg text { font-family: var(--font-anthropic-sans); }
+.slp-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.slp-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.slp-key-bar { width: 22px; height: 8px; border-radius: 4px; display: inline-block; }
+.slp-key-line { width: 22px; height: 0; border-top: 2px dashed var(--color-fg-muted); display: inline-block; }
+.slp-key-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--color-fg-muted); background: var(--color-panel); display: inline-block; box-sizing: border-box; }
+.slp-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); line-height: 1.5; max-width: 18rem; z-index: 2; }
+.slp-tip .h { color: var(--cds-text-secondary); }
+.slp-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+.slp-tools input[type=search] { flex: 1 1 14rem; min-width: 0; font: inherit; font-size: var(--cds-font-size-body); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); }
+.slp-tools label { display: inline-flex; gap: 6px; align-items: center; font-size: var(--cds-font-size-body); color: var(--color-fg-muted); }
+.slp-tablebox { overflow: auto; max-height: 40rem; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+.slp-table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; font-size: var(--cds-font-size-body); font-variant-numeric: tabular-nums; }
+.slp-table th { position: sticky; top: 0; z-index: 1; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.slp-table th button { all: unset; cursor: pointer; display: block; padding: var(--cds-pad-sm); }
+.slp-table th button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -2px; }
+.slp-table th[aria-sort=ascending] button::after { content: " ↑"; }
+.slp-table th[aria-sort=descending] button::after { content: " ↓"; }
+.slp-table td { padding: var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); vertical-align: top; }
+.slp-table td.num, .slp-table th.num { text-align: right; }
+.slp-table th.num button { text-align: right; }
+.slp-table td.wrap { min-width: 16rem; max-width: 26rem; white-space: normal; line-height: 1.45; }
+.slp-table td.mid { min-width: 10rem; max-width: 16rem; white-space: normal; line-height: 1.45; }
+.slp-table td:first-child, .slp-table th:first-child { position: sticky; left: 0; background: var(--color-panel); }
+.slp-table th:first-child { z-index: 2; }
+.slp-table td:first-child { font-weight: var(--cds-font-weight-medium); white-space: nowrap; }
+.slp-controls { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.slp-chips { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); }
+.slp-chip, .slp-seg button { font: inherit; font-size: var(--cds-font-size-body); padding: 4px 12px; border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.slp-chip .n { color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.slp-chip[aria-pressed=true], .slp-seg button[aria-pressed=true] { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.slp-chip[aria-pressed=true] .n { color: var(--color-bg); opacity: .75; }
+.slp-chip:focus-visible, .slp-seg button:focus-visible, .slp-ctl select:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.slp-ctlrow { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: center; }
+.slp-seg { display: inline-flex; gap: 4px; }
+.slp-ctl { display: inline-flex; gap: 8px; align-items: center; font-size: var(--cds-font-size-body); color: var(--color-fg-muted); }
+.slp-ctl select { font: inherit; font-size: var(--cds-font-size-body); padding: 4px 8px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
+.slp-filtered { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.slp-about { display: flex; flex-direction: column; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-body); line-height: 1.55; max-width: 75ch; }
+.slp-about p { margin: 0; }
+.slp-table tr.is-sa td { background: color-mix(in srgb, var(--color-panel) 88%, var(--color-fg) 12%); }
+.slp-pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); white-space: nowrap; }
+.slp-pill.ok { color: var(--color-ok); }
+.slp-pill.warn { color: var(--color-warn); }
+.slp-pill.bad { color: var(--color-bad); }
+.slp-sources { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-xs) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); }
+.slp-sources li { display: flex; flex-direction: column; min-width: 0; padding-block: 4px; border-bottom: 1px solid var(--color-border-line); }
+.slp-sources a, .slp-srcfile { color: var(--color-fg-muted); overflow-wrap: anywhere; }
+.slp-fail { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); min-height: inherit; }
+.slp-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+[data-dash-source-state=empty] { color: transparent; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+</style>
+
+<div class="slp">
+  <header class="slp-head">
+    <h1 class="slp-title" id="top">Orange County SLP pay by district</h1>
+    <p class="slp-lede" id="takeaway">
+      Among the <b data-source="summary" data-field="current_n" data-row="0" class="dash-skeleton">—</b> districts with a readable 2025-26 or 2026-27 schedule, a school SLP with a master's starts between
+      <b data-source="summary" data-field="min_start" data-row="0" class="dash-skeleton">—</b> and <b data-source="summary" data-field="max_start" data-row="0" class="dash-skeleton">—</b>
+      and tops out between <b data-source="summary" data-field="min_top" data-row="0" class="dash-skeleton">—</b> and <b data-source="summary" data-field="max_top" data-row="0" class="dash-skeleton">—</b>, counting stipends every SLP receives.
+      <b data-source="summary" data-field="own_n" data-row="0" class="dash-skeleton">—</b> of <b data-source="summary" data-field="total_n" data-row="0" class="dash-skeleton">—</b> agencies pay SLPs on a schedule of their own; most others use the teacher schedule with a set percentage, an SLP stipend or a higher starting step.
+    </p>
+    <p class="slp-lede" style="font-size:var(--cds-font-size-caption)">Last updated October 21, 2026 · <a class="slp-dl" href="oc_slp_pay.csv" download>Download the data (CSV)</a></p>
+  </header>
+
+  <section class="slp-tiles" aria-label="Headline figures">
+    <div class="slp-tile">
+      <span class="slp-tile-label">Median starting pay</span>
+      <span class="slp-tile-value dash-skeleton" data-source="summary" data-field="median_start" data-row="0">—</span>
+      <span class="slp-tile-note">Master's column, step 1 (or the district's SLP minimum), plus stipends every SLP gets</span>
+    </div>
+    <div class="slp-tile">
+      <span class="slp-tile-label">Median top of schedule</span>
+      <span class="slp-tile-value dash-skeleton" data-source="summary" data-field="median_top" data-row="0">—</span>
+      <span class="slp-tile-note">Top step with longevity, plus the SLP stipend</span>
+    </div>
+    <div class="slp-tile">
+      <span class="slp-tile-label">Median max with all stipends</span>
+      <span class="slp-tile-value dash-skeleton" data-source="summary" data-field="median_max_all" data-row="0">—</span>
+      <span class="slp-tile-note">Like Irvine's "Super Max": top plus every credential, license and degree stipend. Highest: <b data-source="summary" data-field="max_all_district" data-row="0" class="dash-skeleton">—</b></span>
+    </div>
+    <div class="slp-tile">
+      <span class="slp-tile-label">Highest start</span>
+      <span class="slp-tile-value dash-skeleton" data-source="summary" data-field="highest_start" data-row="0">—</span>
+      <span class="slp-tile-note dash-skeleton" data-source="summary" data-field="highest_start_district" data-row="0">—</span>
+    </div>
+    <div class="slp-tile">
+      <span class="slp-tile-label"><span class="slp-focus" data-source="pay" data-field="district" data-where="district=Santa Ana USD">—</span> start</span>
+      <span class="slp-tile-value dash-skeleton slp-focus" data-source="pay" data-field="start_with_addon" data-where="district=Santa Ana USD">—</span>
+      <span class="slp-tile-note">Ranks <b class="slp-focus dash-skeleton" data-source="ranks" data-field="start_rank" data-where="district=Santa Ana USD">—</b> of <b data-source="summary" data-field="current_n" data-row="0" class="dash-skeleton">—</b> on start, <b class="slp-focus dash-skeleton" data-source="ranks" data-field="top_rank" data-where="district=Santa Ana USD">—</b> on top and <b class="slp-focus dash-skeleton" data-source="ranks" data-field="max_rank" data-where="district=Santa Ana USD">—</b> on max with all stipends. Change it with Highlight below.</span>
+    </div>
+  </section>
+
+  <section class="slp-controls" id="controls" aria-label="Filter the chart and table">
+    <div class="slp-chips" id="group-chips" role="group" aria-label="How SLPs are paid" data-source="by_type"></div>
+    <div class="slp-ctlrow">
+      <div class="slp-seg" role="group" aria-label="Chart units">
+        <button type="button" data-view="annual" aria-pressed="true">Annual pay</button>
+        <button type="button" data-view="perday" aria-pressed="false">Pay per work day</button>
+      </div>
+      <label class="slp-ctl" for="focus-sel">Highlight <select id="focus-sel" data-source="pay"></select></label>
+      <span class="slp-filtered" id="filtered-note"></span>
+    </div>
+  </section>
+
+  <section class="slp-card" id="range">
+    <h2 id="range-title">Starting to top pay, by district</h2>
+    <p class="slp-note">Pay including stipends every credentialed SLP receives. The thin line runs on to the max with every credential, license and degree stipend added.</p>
+    <div class="slp-legend" aria-hidden="true">
+      <span><i class="slp-key-bar" id="key-cur"></i>District</span>
+      <span><i class="slp-key-bar" id="key-sa"></i><span id="key-sa-label">Highlighted district</span></span>
+      <span><i class="slp-key-dot"></i>Start before SLP stipend</span>
+      <span><i class="slp-key-line"></i>Up to max with all stipends</span>
+    </div>
+    <div class="slp-chartwrap dash-skeleton" id="range-chart" data-source="pay"></div>
+  </section>
+
+  <div class="slp-grid2">
+    <section class="slp-card" id="structure">
+      <h2>How SLPs are paid</h2>
+      <p class="slp-note">Some districts publish a separate SLP schedule; others apply a set percentage to the teacher schedule or add a stipend.</p>
+      <div class="slp-mix dash-skeleton" id="mix" data-source="by_type"></div>
+    </section>
+    <section class="slp-card" id="method">
+      <h2>How to read these numbers</h2>
+      <ul class="slp-method">
+        <li><b>Start</b> is step 1 of the column an SLP with a master's lands in, usually BA+45 or MA, plus the SLP stipend. Cypress, Garden Grove and Los Alamitos place every SLP at a higher step, and those minimums are used.</li>
+        <li><b>Top</b> is the last step with longevity on the highest column reachable without a doctorate, plus the SLP stipend.</li>
+        <li><b>SLP stipend</b> counts only pay every credentialed SLP gets: Irvine's credential and master's stipends, Santa Ana's stipend tied to Class III step 8, Ocean View's SLP stipend, Tustin's master's stipend and Los Alamitos's ASHA allowance.</li>
+        <li><b>Max with all stipends</b> adds every stipend tied to something an SLP can hold, such as a doctorate, CCC, state license or National Board certification. Stipends that depend on the assignment (bilingual, coordinator, supervising fellows) are left out. Irvine and Tustin publish this figure as a "Super Max".</li>
+        <li><b>Per day</b> divides pay by the district's work days, since work years range from 184 to 205 days.</li>
+        <li>Figures come from district salary schedules and union contracts. Every district with a current schedule was checked a second time against its source document.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="slp-card" id="table">
+    <h2>Orange County districts</h2>
+    <p class="slp-note">Sort by any column. Huntington Beach Union High, Magnolia and Savanna are left out because no readable SLP schedule was found.</p>
+    <div class="slp-tools">
+      <input type="search" id="slp-search" placeholder="Search districts, unions, notes" aria-label="Search the table">
+    </div>
+    <div class="slp-tablebox">
+      <table class="slp-table" data-source="pay" data-row-key="district">
+        <thead><tr>
+          <th data-field="district"><button type="button" data-k="district">District</button></th>
+          <th data-field="schedule_type"><button type="button" data-k="schedule_type">How paid</button></th>
+          <th data-field="year"><button type="button" data-k="year">Year</button></th>
+          <th class="num" data-field="slp_addon"><button type="button" data-k="slp_addon" data-num="1">SLP stipend</button></th>
+          <th class="num" data-field="start_with_addon"><button type="button" data-k="start_with_addon" data-num="1">Start with SLP stipend</button></th>
+          <th class="num" data-field="top_with_addon"><button type="button" data-k="top_with_addon" data-num="1">Top with SLP stipend</button></th>
+          <th class="num" data-field="max_all"><button type="button" data-k="max_all" data-num="1">Max, all stipends</button></th>
+          <th data-field="max_all_basis"><button type="button" data-k="max_all_basis">How the max adds up</button></th>
+          <th class="num" data-field="days"><button type="button" data-k="days" data-num="1">Days</button></th>
+          <th class="num" data-field="start_per_day"><button type="button" data-k="start_per_day" data-num="1">Start per day</button></th>
+          <th data-field="schedule_detail"><button type="button" data-k="schedule_detail">Schedule detail</button></th>
+          <th data-field="addon_note"><button type="button" data-k="addon_note">SLP stipend basis</button></th>
+          <th data-field="other_stipends"><button type="button" data-k="other_stipends">Other stipends</button></th>
+          <th data-field="caseload"><button type="button" data-k="caseload">Caseload cap</button></th>
+          <th data-field="duty_day"><button type="button" data-k="duty_day">Duty day</button></th>
+          <th data-field="contract_ref"><button type="button" data-k="contract_ref">Contract section</button></th>
+          <th data-field="union"><button type="button" data-k="union">Bargaining unit</button></th>
+          <th data-field="notes"><button type="button" data-k="notes">Notes</button></th>
+          <th data-field="level"><button type="button" data-k="level">Level</button></th>
+        </tr></thead>
+        <tbody id="slp-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="slp-card" id="about">
+    <h2>About this page</h2>
+    <div class="slp-about">
+      <p>This compares pay for school-based speech-language pathologists with a master's degree across Orange County school districts and the County Department of Education. It was compiled in October 2026 from each district's posted certificated salary schedules and union contracts.</p>
+      <p>It is not an official district or union document. Schedules change when contracts settle, and several districts were still negotiating 2026-27 raises when this was compiled. Confirm current pay, step placement and stipends with the district's human resources office before relying on a figure.</p>
+      <p>Caseload caps and duty days come from each district's current teachers' or pupil-services contract. Where a contract sets no number, state law applies: Education Code 56363.3 caps a language, speech and hearing specialist's caseload at an average of 55, and 56441.7 at 40 for preschool-only caseloads, unless a waiver is granted. "Not readable yet" means the contract couldn't be read and is still being checked.</p>
+      <p>Annual figures are for each district's own work year, which ranges from 184 to 205 days. Use "Pay per work day" to compare across different work years.</p>
+    </div>
+  </section>
+
+  <section class="slp-card" id="sources">
+    <h2>Main source for each district</h2>
+    <p class="slp-note">Every source used is in the all_sources column of the downloadable CSV.</p>
+    <ul class="slp-sources" id="slp-sources" data-source="pay"></ul>
+  </section>
+</div>
+
+<script>
+dash.calc('summary', {
+  inputs: ['pay'],
+  title: 'Current-schedule summary',
+  description: 'Medians and ranges over districts with a current readable schedule, pay including stipends every SLP gets.',
+  fn: (pay) => {
+    const cur = pay.filter(r => r.status === 'Current');
+    const s = cur.map(r => +r.start_with_addon).sort((a, b) => a - b);
+    const t = cur.map(r => +r.top_with_addon).sort((a, b) => a - b);
+    const med = a => a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2;
+    const byStart = cur.slice().sort((a, b) => b.start_with_addon - a.start_with_addon);
+    const byTop = cur.slice().sort((a, b) => b.top_with_addon - a.top_with_addon);
+    const byMax = cur.slice().sort((a, b) => b.max_all - a.max_all);
+    const mx = cur.map(r => +r.max_all).sort((a, b) => a - b);
+    return [{
+      current_n: cur.length, total_n: pay.length,
+      median_start: med(s), median_top: med(t),
+      min_start: s[0], max_start: s[s.length - 1], min_top: t[0], max_top: t[t.length - 1],
+      highest_start: +byStart[0].start_with_addon, highest_start_district: byStart[0].district,
+      own_n: pay.filter(r => r.schedule_type === 'Own SLP schedule').length,
+      median_max_all: med(mx), max_all_district: byMax[0].district
+    }];
+  }
+});
+
+dash.calc('ranks', {
+  inputs: ['pay'],
+  title: 'District ranks',
+  description: 'Each district rank (1 = highest) on start, top and max pay, all including stipends, among districts with a current schedule.',
+  fn: (pay) => {
+    const cur = pay.filter(r => r.status === 'Current');
+    const rank = k => { const s = cur.slice().sort((a, b) => b[k] - a[k]); return d => s.findIndex(r => r.district === d) + 1; };
+    const a = rank('start_with_addon'), b = rank('top_with_addon'), c = rank('max_all');
+    return cur.map(r => ({ district: r.district, start_rank: a(r.district), top_rank: b(r.district), max_rank: c(r.district) }));
+  }
+});
+
+dash.calc('by_type', {
+  inputs: ['pay'],
+  title: 'Agencies by pay structure',
+  description: 'Number of agencies under each way of paying SLPs.',
+  fn: (pay) => {
+    const order = ['Own SLP schedule', 'Teacher schedule + % for SLPs', 'Teacher schedule + SLP stipend', 'Teacher schedule, no SLP stipend', 'Teacher schedule, stipend unknown', 'Unconfirmed'];
+    return order.map(t => ({ schedule_type: t, n: pay.filter(r => r.schedule_type === t).length })).filter(r => r.n > 0);
+  }
+});
+
+(function () {
+  const money = v => (v === null || v === undefined || v === '') ? '—' : '$' + d3.format(',.0f')(+v);
+  const kfmtK = v => '$' + d3.format(',.0f')(v / 1000) + 'K';
+  const isNum = v => v !== null && v !== undefined && v !== '' && !isNaN(+v);
+
+  const fill = (sel, val, f) => document.querySelectorAll(sel).forEach(el => { el.textContent = f(val); el.classList.remove('dash-skeleton'); });
+
+  function failLine(el) { el.classList.remove('dash-skeleton'); el.innerHTML = ''; const d = document.createElement('div'); d.className = 'slp-fail'; d.textContent = 'Failed to load'; el.appendChild(d); }
+
+  document.getElementById('key-cur').style.background = dash.colors[0];
+  document.getElementById('key-sa').style.background = dash.colors[1];
+  
+  // ---------- header + tiles ----------
+  dash.onData(() => {
+    const s = dash.data('summary');
+    const els = document.querySelectorAll('[data-source="summary"]');
+    if (s.status !== 'ok' || !s.data || !s.data[0]) { els.forEach(el => { el.textContent = '—'; }); return; }
+    const r = s.data[0];
+    const plain = new Set(['current_n', 'total_n', 'own_n', 'highest_start_district', 'max_all_district']);
+    els.forEach(el => {
+      const f = el.getAttribute('data-field');
+      const v = r[f];
+      el.textContent = plain.has(f) ? String(v) : money(v);
+      el.classList.remove('dash-skeleton');
+    });
+  });
+
+  // ---------- filters: group, view, highlighted district ----------
+  const P = () => { const p = dash.params() || {}; return { group: p.group || 'All', view: p.view || 'annual', focus: p.focus || 'Santa Ana USD' }; };
+  const enc = s => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
+
+  dash.onData(() => {
+    const { focus } = P();
+    const p = dash.data('pay'), rk = dash.data('ranks');
+    document.querySelectorAll('.slp-focus').forEach(el => {
+      el.setAttribute('data-where', 'district=' + enc(focus));
+      const src = el.dataset.source === 'ranks' ? rk : p;
+      if (src.status !== 'ok') { el.textContent = '—'; return; }
+      const r = src.data.find(x => x.district === focus);
+      const v = r ? r[el.dataset.field] : null;
+      el.textContent = v === null || v === undefined ? '—' : (el.dataset.field === 'start_with_addon' ? money(v) : String(v));
+      el.classList.remove('dash-skeleton');
+    });
+    document.getElementById('key-sa-label').textContent = focus;
+    const sel = document.getElementById('focus-sel');
+    if (p.status === 'ok' && sel !== document.activeElement) {
+      const names = p.data.map(r => r.district).sort((a, b) => a.localeCompare(b));
+      if (sel.options.length !== names.length) sel.replaceChildren(...names.map(n => new Option(n, n)));
+      sel.value = focus;
+    }
+  });
+  document.getElementById('focus-sel').addEventListener('change', e => dash.setParams({ focus: e.target.value }));
+
+  dash.onData(() => {
+    const box = document.getElementById('group-chips');
+    const b = dash.data('by_type');
+    const { group } = P();
+    box.innerHTML = '';
+    if (b.status !== 'ok') return;
+    const total = d3.sum(b.data, d => d.n);
+    [{ schedule_type: 'All', n: total }, ...b.data].forEach(d => {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'slp-chip'; btn.dataset.group = d.schedule_type;
+      btn.setAttribute('aria-pressed', String(d.schedule_type === group));
+      const t = document.createElement('span'); t.textContent = d.schedule_type === 'All' ? 'All districts' : d.schedule_type;
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = d.n;
+      btn.append(t, n); box.appendChild(btn);
+    });
+    const note = document.getElementById('filtered-note');
+    note.textContent = group === 'All' ? '' : 'Chart and table show one group. Headline figures cover every district.';
+  });
+  document.getElementById('group-chips').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-group]');
+    if (btn) dash.setParams({ group: btn.dataset.group });
+  });
+  document.querySelectorAll('.slp-seg button').forEach(b => b.addEventListener('click', () => dash.setParams({ view: b.dataset.view })));
+  dash.onData(() => {
+    const { view } = P();
+    document.querySelectorAll('.slp-seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    document.getElementById('range-title').textContent = view === 'perday' ? 'Starting to top pay per work day, by district' : 'Starting to top pay, by district';
+  });
+
+  // ---------- structure mix ----------
+  dash.onData(() => {
+    const box = document.getElementById('mix');
+    const b = dash.data('by_type');
+    if (b.status === 'error') { failLine(box); return; }
+    if (b.status !== 'ok') { box.innerHTML = ''; return; }
+    box.classList.remove('dash-skeleton');
+    box.innerHTML = '';
+    const colorOf = i => i < 4 ? dash.colors[i] : 'var(--cds-chart-muted)';
+    const bar = document.createElement('div'); bar.className = 'slp-mixbar';
+    const total = d3.sum(b.data, d => d.n);
+    b.data.forEach((d, i) => { const s = document.createElement('span'); s.style.flex = String(d.n / total); s.style.background = colorOf(i); bar.appendChild(s); });
+    box.appendChild(bar);
+    const ul = document.createElement('ul'); ul.className = 'slp-mixlist';
+    b.data.forEach((d, i) => {
+      const li = document.createElement('li');
+      const sw = document.createElement('i'); sw.className = 'slp-sw'; sw.style.background = colorOf(i);
+      const name = document.createElement('span'); name.textContent = d.schedule_type;
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = d.n;
+      li.append(sw, name, n); ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  });
+
+  // ---------- range chart ----------
+  dash.onData(() => {
+    const wrap = document.getElementById('range-chart');
+    const p = dash.data('pay');
+    wrap.innerHTML = '';
+    if (p.status === 'error') { failLine(wrap); return; }
+    if (p.status !== 'ok') { wrap.classList.add('dash-skeleton'); return; }
+    wrap.classList.remove('dash-skeleton');
+
+    const { group, view, focus } = P();
+    const perDay = view === 'perday';
+    const rows = p.data.filter(r => isNum(r.start) && isNum(r.top) && (group === 'All' || r.schedule_type === group) && (!perDay || isNum(r.days)))
+      .map(r => {
+        const dv = perDay ? +r.days : 1;
+        const t = +r.top_with_addon;
+        return { ...r, s0: +r.start / dv, s: +r.start_with_addon / dv, t: t / dv, add: isNum(r.slp_addon) ? +r.slp_addon : 0, mx: (isNum(r.max_all) ? Math.max(+r.max_all, t) : t) / dv };
+      })
+      .sort((a, b) => b.s - a.s);
+    if (!rows.length) { wrap.style.minHeight = '4rem'; return; }
+    const kfmt = perDay ? (v => '$' + d3.format(',.0f')(v)) : kfmtK;
+    const W = Math.max(280, wrap.clientWidth);
+    const narrow = W < 560;
+    const rowH = 26;
+    const svg = d3.select(wrap).append('svg').attr('width', '100%');
+    const label = r => r.status === 'Current' ? r.district : `${r.district} (${r.year})`;
+
+    // measure label width
+    const meas = svg.append('text').attr('font-size', 12);
+    let lw = 0;
+    rows.forEach(r => { meas.text(label(r)); lw = Math.max(lw, meas.node().getComputedTextLength()); });
+    meas.remove();
+    const m = { top: 8, right: narrow ? 12 : 96, bottom: 28, left: Math.ceil(lw) + 12 };
+    const H = m.top + rows.length * rowH + m.bottom;
+    svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+    wrap.style.minHeight = H + 'px';
+
+    const unit = perDay ? 50 : 10000;
+    const lo = Math.floor(d3.min(rows, r => Math.min(r.s, r.s0)) * 0.95 / unit) * unit;
+    const hi = Math.ceil(d3.max(rows, r => r.mx) / unit) * unit;
+    const x = d3.scaleLinear([lo, hi], [m.left + (narrow ? 4 : 50), W - m.right]);
+    const y = d3.scaleBand(rows.map(r => r.district), [m.top, H - m.bottom]).padding(0.35);
+
+    const ticks = x.ticks(narrow ? 4 : 7);
+    const g = svg.append('g');
+    g.selectAll('line.grid').data(ticks).join('line')
+      .attr('x1', d => x(d)).attr('x2', d => x(d)).attr('y1', m.top).attr('y2', H - m.bottom)
+      .attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
+    g.selectAll('text.tick').data(ticks).join('text')
+      .attr('x', d => x(d)).attr('y', H - m.bottom + 18).attr('text-anchor', 'middle')
+      .attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text(d => kfmt(d));
+
+    const colorOf = r => r.district === focus ? dash.colors[1] : (r.status === 'Current' ? dash.colors[0] : 'var(--cds-chart-muted)');
+
+    const rg = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', r => `translate(0,${y(r.district)})`);
+    const bh = y.bandwidth();
+    rg.append('rect').attr('x', 0).attr('y', -(rowH - bh) / 2).attr('width', W).attr('height', rowH)
+      .attr('fill', 'transparent').attr('class', 'hit');
+    rg.append('text').attr('x', m.left - 10).attr('y', bh / 2).attr('dy', '0.35em').attr('text-anchor', 'end')
+      .attr('font-size', 12).attr('font-weight', r => r.district === focus ? 600 : 400)
+      .attr('fill', 'var(--color-fg)').text(label);
+    rg.filter(r => r.mx > r.t).append('line').attr('x1', r => x(r.t)).attr('x2', r => x(r.mx))
+      .attr('y1', bh / 2).attr('y2', bh / 2).attr('stroke', 'var(--color-fg-muted)').attr('stroke-width', 2).attr('stroke-dasharray', '4 3');
+    rg.append('rect').attr('x', r => x(r.s)).attr('width', r => Math.max(2, x(r.t) - x(r.s)))
+      .attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', colorOf);
+    rg.filter(r => r.add > 0).append('circle').attr('cx', r => x(r.s0)).attr('cy', bh / 2).attr('r', 3.5)
+      .attr('fill', 'var(--color-panel)').attr('stroke', 'var(--color-fg-muted)').attr('stroke-width', 1.5);
+    if (!narrow) {
+      rg.append('text').attr('x', r => x(Math.min(r.s, r.s0)) - 8).attr('y', bh / 2).attr('dy', '0.35em').attr('text-anchor', 'end')
+        .attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text(r => kfmt(r.s));
+      rg.append('text').attr('x', r => x(r.mx) + 6).attr('y', bh / 2).attr('dy', '0.35em')
+        .attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text(r => r.mx > r.t ? `${kfmt(r.t)} · ${kfmt(r.mx)}` : kfmt(r.t));
+    }
+
+    const tip = document.createElement('div'); tip.className = 'slp-tip'; tip.hidden = true; wrap.appendChild(tip);
+    rg.on('mousemove', (ev, r) => {
+      tip.innerHTML = '';
+      const add = (cls, txt) => { const d = document.createElement('div'); if (cls) d.className = cls; d.textContent = txt; tip.appendChild(d); };
+      add('h', `${r.district} · ${r.year}`);
+      const f = perDay ? (v => '$' + d3.format(',.0f')(v) + ' a day') : money;
+      add('', `Start ${f(r.s)}${r.add && !perDay ? ` (base ${money(r.s0)} + ${money(r.add)})` : ''}`);
+      add('', `Top ${f(r.t)}`);
+      if (r.mx > r.t) add('', `Max with all stipends ${f(r.mx)}`);
+      add('', `${r.schedule_type}${r.days ? ` · ${r.days} days` : ''}`);
+      tip.hidden = false;
+      const [px, py] = d3.pointer(ev, wrap);
+      const tw = tip.offsetWidth;
+      tip.style.left = Math.min(Math.max(0, px + 12), wrap.clientWidth - tw) + 'px';
+      tip.style.top = (py + 14) + 'px';
+    }).on('mouseleave', () => { tip.hidden = true; });
+  });
+
+  // ---------- table ----------
+  const cols = [...document.querySelectorAll('.slp-table thead th')].map(th => ({ k: th.dataset.field, num: th.classList.contains('num') }));
+  const moneyCols = new Set(['start', 'top', 'slp_addon', 'start_with_addon', 'top_with_addon', 'max_all']);
+  const wrapCols = new Set(['notes', 'other_stipends', 'schedule_detail', 'max_all_basis']);
+  const midCols = new Set(['addon_note', 'duty_day', 'caseload', 'contract_ref', 'union', 'schedule_type']);
+  let sortKey = 'start_with_addon', sortDir = -1, sortNum = true;
+
+  function cellText(k, v) {
+    if (v === null || v === undefined || v === '') return '—';
+    if (moneyCols.has(k)) return money(v);
+    if (k === 'start_per_day') return '$' + d3.format(',.0f')(+v);
+    return String(v);
+  }
+
+  function drawTable() {
+    const p = dash.data('pay');
+    const tb = document.getElementById('slp-tbody');
+    tb.innerHTML = '';
+    if (p.status !== 'ok') return;
+    const q = document.getElementById('slp-search').value.trim().toLowerCase();
+    const { group, focus } = P();
+    let rows = p.data.filter(r => group === 'All' || r.schedule_type === group)
+      .filter(r => !q || cols.some(c => String(r[c.k] ?? '').toLowerCase().includes(q)));
+    rows.sort((a, b) => {
+      const av = a[sortKey], bv = b[sortKey];
+      const an = av === null || av === undefined || av === '', bn = bv === null || bv === undefined || bv === '';
+      if (an && bn) return 0; if (an) return 1; if (bn) return -1;
+      return sortNum ? sortDir * (+av - +bv) : sortDir * String(av).localeCompare(String(bv));
+    });
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      if (r.district === focus) tr.className = 'is-sa';
+      cols.forEach(c => {
+        const td = document.createElement('td');
+        if (c.num) td.className = 'num';
+        else if (wrapCols.has(c.k)) td.className = 'wrap';
+        else if (midCols.has(c.k)) td.className = 'mid';
+        if (c.k === 'status') {
+          const s = document.createElement('span');
+          s.className = 'slp-pill ' + (r.status === 'Current' ? 'ok' : r.status === 'Older year' ? 'warn' : 'bad');
+          s.textContent = r.status; td.appendChild(s);
+        } else td.textContent = cellText(c.k, r[c.k]);
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    document.querySelectorAll('.slp-table th').forEach(th => {
+      th.setAttribute('aria-sort', th.dataset.field === sortKey ? (sortDir > 0 ? 'ascending' : 'descending') : 'none');
+    });
+  }
+  document.querySelectorAll('.slp-table th button').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k;
+    if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortNum = !!b.dataset.num; sortDir = sortNum ? -1 : 1; }
+    drawTable();
+  }));
+  document.getElementById('slp-search').addEventListener('input', drawTable);
+  dash.onData(drawTable);
+
+  // ---------- sources ----------
+  dash.onData(() => {
+    const ul = document.getElementById('slp-sources');
+    const p = dash.data('pay');
+    ul.innerHTML = '';
+    if (p.status !== 'ok') return;
+    p.data.slice().sort((a, b) => a.district.localeCompare(b.district)).forEach(r => {
+      if (!r.source) return;
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.textContent = r.district;
+      let a;
+      if (/^https?:\/\//.test(r.source)) {
+        a = document.createElement('a'); a.href = r.source; a.target = '_blank'; a.rel = 'noopener';
+        let txt = r.source; try { const u = new URL(r.source); txt = u.hostname + decodeURIComponent(u.pathname).slice(0, 70); } catch (e) {}
+        a.textContent = txt;
+      } else { a = document.createElement('span'); a.className = 'slp-srcfile'; a.textContent = r.source; }
+      li.append(n, a); ul.appendChild(li);
+    });
+  });
+})();
+</script>
+
+</div>
+</body>
+</html>
