@@ -2,7 +2,7 @@ window.SLP_DATA = [
  {
   "district": "Anaheim Union HSD",
   "level": "High school",
-  "schedule_type": "Teacher schedule + SLP stipend",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "Teacher schedule; SLP workload stipend in contract Appendix M",
   "union": "ASTA (teachers)",
   "year": "2025-26",
@@ -86,7 +86,7 @@ window.SLP_DATA = [
  {
   "district": "Buena Park SD",
   "level": "Elementary",
-  "schedule_type": "Teacher schedule + % for SLPs",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "'Special Services' schedule = teacher schedule + 5%, shared with special ed teachers and resource specialists",
   "union": "BPTA (teachers)",
   "year": "2026-27",
@@ -310,7 +310,7 @@ window.SLP_DATA = [
  {
   "district": "Irvine USD",
   "level": "Unified",
-  "schedule_type": "Teacher schedule + SLP stipend",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "Teacher schedule plus SLP credential stipend",
   "union": "ITA (teachers)",
   "year": "2025-26",
@@ -394,7 +394,7 @@ window.SLP_DATA = [
  {
   "district": "Los Alamitos USD",
   "level": "Unified",
-  "schedule_type": "Teacher schedule + SLP stipend",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "Teacher schedule; SLPs start at step 6 or higher",
   "union": "LAEA (teachers)",
   "year": "2025-26",
@@ -450,7 +450,7 @@ window.SLP_DATA = [
  {
   "district": "Ocean View SD",
   "level": "Elementary",
-  "schedule_type": "Teacher schedule + SLP stipend",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "Teacher schedule plus SLP stipend",
   "union": "OVTA (teachers)",
   "year": "2025-26",
@@ -562,7 +562,7 @@ window.SLP_DATA = [
  {
   "district": "Santa Ana USD",
   "level": "Unified",
-  "schedule_type": "Teacher schedule + SLP stipend",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "Teacher schedule A-1 plus SLP stipend",
   "union": "SAEA (teachers)",
   "year": "2026-27",
@@ -590,7 +590,7 @@ window.SLP_DATA = [
  {
   "district": "Tustin USD",
   "level": "Unified",
-  "schedule_type": "Teacher schedule + % for SLPs",
+  "schedule_type": "Teacher schedule + SLP stipend or %",
   "schedule_detail": "Titled 'Teacher Salary Schedule \u2013 Plus 10%', applying to SLPs, psychologists and MS/HS counselors",
   "union": "TEA (teachers)",
   "year": "2025-26",

@@ -327,7 +327,7 @@ dash.calc('by_type', {
   title: 'Agencies by pay structure',
   description: 'Number of agencies under each way of paying SLPs.',
   fn: (pay) => {
-    const order = ['Own SLP schedule', 'Teacher schedule + % for SLPs', 'Teacher schedule + SLP stipend', 'Teacher schedule, no SLP stipend', 'Teacher schedule, stipend unknown', 'Unconfirmed'];
+    const order = ['Own SLP schedule', 'Teacher schedule + SLP stipend or %', 'Teacher schedule, no SLP stipend', 'Teacher schedule, stipend unknown', 'Unconfirmed'];
     return order.map(t => ({ schedule_type: t, n: pay.filter(r => r.schedule_type === t).length })).filter(r => r.n > 0);
   }
 });
