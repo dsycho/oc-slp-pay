@@ -210,7 +210,7 @@ window.SLP_DATA = [
   "max_all": 150979,
   "max_all_basis": "Top + doctorate $3,500 + NBCT $1,000.",
   "duty_day": "No set length: up to 30 min before students plus a reasonable time after; same as teachers",
-  "caseload": "Average of 55; 40 if preschool only",
+  "caseload": "Average of 55 (contract restates Ed Code 56363.3, so the SELPA local plan can set a higher average); 40 if preschool only",
   "contract_ref": "OUEA 2024-27 Art. 9 9.200(d), Art. 6",
   "hours_per_day": null,
   "start_per_hour": null,
