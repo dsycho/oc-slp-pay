@@ -23,9 +23,12 @@ window.SLP_DATA = [
   "all_sources": "SLP_Salary_Schedule_185_Days.2025-2026.pdf (district salary schedule PDF) | https://wp-cdn.milocloud.com/my-bota-org-wp/wp-content/uploads/2026/04/30091102/FinalBOTACBA.2025-26.pdf | https://www.bousd.us/page/salary-schedules | https://transparentcalifornia.com/salaries/2024/school-districts/orange/brea-olinda-unified/?q=speech",
   "max_all": 141213,
   "max_all_basis": "No stipends listed on the schedule.",
-  "duty_day": "No posted agreement",
+  "duty_day": "No set length found: SLPs are outside the teachers’ unit and no SLP agreement is posted",
   "caseload": "No posted agreement (SLPs are outside the teachers' unit)",
-  "contract_ref": "BOTA CBA Art. 1.1 (excludes SLPs)"
+  "contract_ref": "BOTA CBA Art. 1.1 (excludes SLPs)",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Garden Grove USD",
@@ -51,9 +54,12 @@ window.SLP_DATA = [
   "all_sources": "slp-audiologist-2526.pdf (GGUSD 2025-26 SLP/Audiologist schedule) (district salary schedule PDF) | https://www.ggusd.us/departments/personnel-services/salary-schedules | https://www.ggusd.us/media/13008/slp-audiologist-2526.pdf | https://www.ggusd.us/departments/personnel-services/contract-agreements | https://www.ggea.org/wp-content/uploads/2025/08/2024-25-GGEA-Contract.pdf",
   "max_all": 164533,
   "max_all_basis": "Doctorate column (Group IV) step 25. Other stipends unknown.",
-  "duty_day": "Contract not readable yet",
+  "duty_day": "Not checked: SLPs are in the pupil personnel unit, whose contract couldn’t be read. Teachers: up to 30 min before and 15 min after instructional time",
   "caseload": "Contract not readable yet",
-  "contract_ref": "GGPPSA 2024-25 contract"
+  "contract_ref": "GGPPSA 2024-25 contract",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Irvine USD",
@@ -79,9 +85,12 @@ window.SLP_DATA = [
   "all_sources": "https://iusd.org/sites/default/files/documents/2526-CERTSAL_CE.pdf | https://iusd.org/sites/default/files/documents/ITA%20IUSD%20Agreement%202025-26_1.pdf | https://iusd.org/about/departments/human-resources/salary-schedules-employee-agreements | https://citizenportal.ai/articles/7452726/California/School-Districts/Irvine-Unified-School-District/Board-ratifies-salary-and-benefits-settlement-with-teachers-supervisory-and-administrative-groups",
   "max_all": 153498,
   "max_all_basis": "District's published SLP Super Max: top + master's $3,128 + credential $7,619 + CA SLP license $3,130.",
-  "duty_day": "40 hrs/week, at least 35 on site; same as teachers",
+  "duty_day": "40 hrs/week, at least 35 on site (about 7 a day); same as teachers",
   "caseload": "None found (later articles not read)",
-  "contract_ref": "ITA Art. 10.2.5-10.2.8, 10.4"
+  "contract_ref": "ITA Art. 10.2.5-10.2.8, 10.4",
+  "hours_per_day": 7,
+  "start_per_hour": 64.12,
+  "top_per_hour": 115.49
  },
  {
   "district": "Laguna Beach USD",
@@ -107,9 +116,12 @@ window.SLP_DATA = [
   "all_sources": "https://resources.finalsite.net/images/v1788552476/lagunabeach/fwx1uxaj0odbaqfrlyz3/TeacherSLPSalary.pdf | https://resources.finalsite.net/images/v1784234077/lagunabeach/s7pha8pm64mbbdxd8rxc/LaBUFATentativeAgreement.pdf | https://www.lbusd.org/departments/human-resources/salary-schedules",
   "max_all": 167616.51,
   "max_all_basis": "Top with longevity + CCC or NBCT $2,500 (one or the other) + doctorate $2,500. Unit credit ($267.90 per unit) and growth points could add about $22,500 more if paid on top of the range.",
-  "duty_day": "At least 35 hrs/week on site; same as teachers",
+  "duty_day": "35 hrs/week on site (about 7 a day); same as teachers",
   "caseload": "Average of 55; 40 if preschool only",
-  "contract_ref": "LaBUFA Art. 8.7.6, Art. 7.2"
+  "contract_ref": "LaBUFA Art. 8.7.6, Art. 7.2",
+  "hours_per_day": 7,
+  "start_per_hour": 63.04,
+  "top_per_hour": 124.23
  },
  {
   "district": "Los Alamitos USD",
@@ -135,9 +147,12 @@ window.SLP_DATA = [
   "all_sources": "https://www.losal.org/departments/human-resources/salary-schedules | https://resources.finalsite.net/images/v1777494180/losalorg/lttnk1ir3tgufaneqwek/2026-2027CertificatedSalarySchedule.pdf | https://resources.finalsite.net/images/v1719872374/losalorg/dsqfftbegf42bb4tzime/2026-2027SpeechandLanguagePathologist-InitialSalaryPlacement.pdf | https://www.indeed.com/viewjob?jk=918945b8baa1eacb | https://resources.finalsite.net/images/v1777494415/losalorg/ufydhdtvcolphkbt7wf7/2024-2026LAEAContractwithAppendixesRev4-23-2026.pdf",
   "max_all": 151935,
   "max_all_basis": "Top + ASHA allowance $1,500 + licensed billing/CF supervision $3,500 + doctorate $600.",
-  "duty_day": "'Hours appropriate to the school day' (no set length)",
+  "duty_day": "No set length: hours ‘appropriate to the school day’; non-student days up to 6.5 hrs plus lunch",
   "caseload": "Follows the Education Code (average 55)",
-  "contract_ref": "LAEA 2024-26 Art. V C.3, A.2"
+  "contract_ref": "LAEA 2024-26 Art. V C.3, A.2",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Newport-Mesa USD",
@@ -163,9 +178,12 @@ window.SLP_DATA = [
   "all_sources": "https://web.nmusd.us/departments/human-resources/salary-schedules | https://resources.finalsite.net/images/v1773243650/nmusdus/fhmjzr24xilsxvekrldp/CESalarySchedule25-26Speech-LanguagePathologistsandAudiologists.pdf | https://resources.finalsite.net/images/v1773243650/nmusdus/dwklrdiujqdnwzklz3iw/CESalarySchedule25-26SDCLanguageSpeechandHearing.pdf | https://resources.finalsite.net/images/v1742510408/nmusdus/zgbzpvi1lka6gjc4msi2/NMFTCBA2024-2027.pdf",
   "max_all": 170214,
   "max_all_basis": "Top of the doctorate + National Board column. BCLAD $1,500 (shortage assignments) left out.",
-  "duty_day": "No set length: 30 min before students; 186 or 191 days",
+  "duty_day": "No set length: 30 min before students until duties are done; non-student days up to 6 hrs plus lunch",
   "caseload": "None in contract (state law)",
-  "contract_ref": "NMFT 2024-27 Art. 3, 8.3"
+  "contract_ref": "NMFT 2024-27 Art. 3, 8.3",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Orange USD",
@@ -191,9 +209,12 @@ window.SLP_DATA = [
   "all_sources": "Speech_Language_Therapist_Salary_Schedule.pdf (district salary schedule PDF) | https://www.orangeusd.org/uploaded/District/21-22_Speech-Language_Salary.pdf | https://www.orangeusd.org/uploaded/District/Departments/Human_Resources/CertSalarySch/23-24_Cert_Salary_Schedules/23_24_Speech_Language_Therapist.pdf | https://www.orangeusd.org/uploaded/HR_CERT_CONTRACT/2024-2027_CERT_CONTRACT/No_4-Article_2_Compensation_rev_8-1-2025.pdf | https://www.ouea.org/images/PDF/24-27EntireAgreement_Oct2026.pdf | https://www.ouea.org/images/PDF/2-23-26_Bargaining_update_.pdf | https://transparentcalifornia.com/salaries/2025/school-districts-orange-orange-unified?q=speech",
   "max_all": 150979,
   "max_all_basis": "Top + doctorate $3,500 + NBCT $1,000.",
-  "duty_day": "No set length; same as teachers",
+  "duty_day": "No set length: up to 30 min before students plus a reasonable time after; same as teachers",
   "caseload": "Average of 55; 40 if preschool only",
-  "contract_ref": "OUEA 2024-27 Art. 9 9.200(d), Art. 6"
+  "contract_ref": "OUEA 2024-27 Art. 9 9.200(d), Art. 6",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Placentia-Yorba Linda USD",
@@ -219,9 +240,12 @@ window.SLP_DATA = [
   "all_sources": "https://4.files.edl.io/fb28/07/29/26/231424-304836a4-4690-4771-80f8-2d8e88a2eb70.pdf | https://www.pylusd.org/apps/pages/index.jsp?uREC_ID=184893&type=d&pREC_ID=385142 | https://aple.org/wp-content/uploads/2024/01/SLP-Salary-schedule-2-24-25.pdf | https://aple.org/wp-content/uploads/2024/08/APLE-Contract-2024.pdf | https://4.files.edl.io/fb28/07/29/26/231424-304836a4-4690-4771-80f8-2d8e88a2eb70.pdf | https://citizenportal.ai/articles/10210926/california/school-districts/placentia-yorba-linda-unified-school-district/board-ratifies-labor-agreements-and-updates-salary-schedules",
   "max_all": 145836,
   "max_all_basis": "Top + doctorate $1,500.",
-  "duty_day": "No set length: 30 min before students; 240 prep min every 2 weeks and 10 release days a year",
+  "duty_day": "No set length: 30 min before students until a sufficient time after; non-student days 7 hrs. SLPs get 240 prep min every 2 weeks and 10 release days",
   "caseload": "Education Code maximums, with an appeal process",
-  "contract_ref": "APLE 2022-25 Art. XI B, Art. XVI"
+  "contract_ref": "APLE 2022-25 Art. XI B, Art. XVI",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Saddleback Valley USD",
@@ -247,9 +271,12 @@ window.SLP_DATA = [
   "all_sources": "https://www.svusd.org/departments/human-resources/salary-schedules | https://www.svusd.org/uploaded/SVUSD_Department_Files/HR/Documents/2025-2026/HR_Documents/2025-07-01_Speech_And_Language_Pathologist_Salary_Schedule_(Updated_Doctorate_Board_Approval_Date).pdf | https://www.edjoin.org/Home/JobPosting/2155090 | https://mysvea.org/salary-schedule/ | https://www.svusd.org/uploaded/SVUSD_Department_Files/HR/Documents/2025-2026/HR_Documents/SVEA_FINAL-_review.pdf",
   "max_all": 153462,
   "max_all_basis": "Top + doctorate $5,391 + CCC and license $750.",
-  "duty_day": "Set by the district; at least 30 min before school until the last class ends",
+  "duty_day": "No set length: 30 min before school until the last class ends (psychologists 8 hrs)",
   "caseload": "Follows the Education Code (average 55; 40 preschool)",
-  "contract_ref": "SVPSA 2018-22 Art. IV G.3, C"
+  "contract_ref": "SVPSA 2018-22 Art. IV G.3, C",
+  "hours_per_day": null,
+  "start_per_hour": null,
+  "top_per_hour": null
  },
  {
   "district": "Santa Ana USD",
@@ -275,9 +302,12 @@ window.SLP_DATA = [
   "all_sources": "https://www.sausd.us/departments/human-resources/certificated-personnel/certificated-salary-schedules | https://resources.finalsite.net/images/v1783628553/sausdus/sglkjaft0vcztymyr5js/2026-27CertificatedSalarySchedule187A-1.pdf | https://resources.finalsite.net/images/v1784572618/sausdus/nx6shn8ted5hexbzrmmv/SAEA-SAUSDCBA2025-2028_1.pdf | https://www.edjoin.org/Home/JobPosting/2256083",
   "max_all": 153544.58,
   "max_all_basis": "Top + SLP stipend $9,864 + doctorate (1% of Class IV). Bilingual stipends left out because they depend on the assignment.",
-  "duty_day": "Flexible duty day (not task-oriented): the instructional day plus required meetings",
+  "duty_day": "Flexible duty day: the instructional day plus required meetings, about 6.5 hrs in practice (the contract sets no number)",
   "caseload": "None found so far (Special Services article not read yet)",
-  "contract_ref": "SAEA 2025-28 Art. VIII 8.2.3, Art. IX 9.5.5, 9.7"
+  "contract_ref": "SAEA 2025-28 Art. VIII 8.2.3, Art. IX 9.5.5, 9.7",
+  "hours_per_day": 6.5,
+  "start_per_hour": 69.57,
+  "top_per_hour": 125.15
  },
  {
   "district": "Tustin USD",
@@ -305,7 +335,10 @@ window.SLP_DATA = [
   "max_all_basis": "District's published Super Max with PhD: top + master's $3,140 + doctorate $4,283.",
   "duty_day": "7.5 hrs not counting lunch (teachers 6.75)",
   "caseload": "None in contract",
-  "contract_ref": "TEA Art. 5.1.2.7, Art. 10.8"
+  "contract_ref": "TEA Art. 5.1.2.7, Art. 10.8",
+  "hours_per_day": 7.5,
+  "start_per_hour": 58.74,
+  "top_per_hour": 109.61
  },
  {
   "district": "Capistrano USD",
@@ -331,8 +364,11 @@ window.SLP_DATA = [
   "all_sources": "5. 2025-2026 CUEA Speech Path.pdf (CUSD 2025-26 Speech Pathologist schedule) (district salary schedule PDF) | https://www.capousd.org/subsites/Human-Resource-Services/Salaries/Certificated/index.html | https://drive.google.com/file/d/16G5iNKgDnkifDiwylKmbr89tLe6bIp3J/view?usp=sharing | https://www.capousd.org/subsites/Human-Resource-Services/documents/Salaries/Certificated/Speech-Pathologist-Salary-Schedule.pdf | https://d16k74nzx9emoe.cloudfront.net/8d57c80e-b4b1-42c1-af36-6b1b97bb5cf1/CUEA%20Contract%202023-2026%20approved%206.18.25.pdf | https://www.edjoin.org/Home/JobPosting/2178502 | https://teacherquality.nctq.org/dmsView/Capistrano_23-24_Salary | https://transparentcalifornia.com/salaries/2025/school-districts-orange-capistrano-unified?page=15",
   "max_all": 148914,
   "max_all_basis": "Published top $139,977 + $2,979 each for CRS credential, CA license and NBCT.",
-  "duty_day": "7 hrs on campus not counting 35-min lunch (teachers 7 hrs including lunch)",
+  "duty_day": "7 hrs on campus not counting a 35-min lunch (teachers 7 hrs including lunch); the contract says the job takes at least 8 hours of daily duty",
   "caseload": "Follows state regulations",
-  "contract_ref": "CUEA 2023-26 Art. 5.5, 8.6"
+  "contract_ref": "CUEA 2023-26 Art. 5.5, 8.6",
+  "hours_per_day": 7,
+  "start_per_hour": 74.11,
+  "top_per_hour": 106.93
  }
 ];

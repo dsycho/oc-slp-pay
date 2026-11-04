@@ -39,7 +39,7 @@ a { color: inherit; }
 .slp-dl:hover { border-color: var(--color-fg-muted); }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="data.js?v=2026-11-03u"></script>
+<script src="data.js?v=2026-11-03h"></script>
 <script>
 // Small stand-in for the dashboard runtime: data, calculations, filters.
 (function () {
@@ -79,7 +79,7 @@ a { color: inherit; }
 .slp-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
 .slp-lede { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-body); line-height: 1.55; }
 .slp-lede b, .slp-tile b { font-weight: 600; color: var(--color-fg); }
-.slp-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--cds-gap-md); }
+.slp-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--cds-gap-md); }
 .slp-tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-xs); min-width: 0; }
 .slp-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 .slp-tile-value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.15; }
@@ -159,6 +159,7 @@ a { color: inherit; }
       <b data-source="summary" data-field="min_start" data-row="0" class="dash-skeleton">—</b> and <b data-source="summary" data-field="max_start" data-row="0" class="dash-skeleton">—</b>
       and tops out between <b data-source="summary" data-field="min_top" data-row="0" class="dash-skeleton">—</b> and <b data-source="summary" data-field="max_top" data-row="0" class="dash-skeleton">—</b>, counting stipends every SLP receives.
       <b data-source="summary" data-field="own_n" data-row="0" class="dash-skeleton">—</b> of <b data-source="summary" data-field="total_n" data-row="0" class="dash-skeleton">—</b> districts pay SLPs on a schedule of their own; the others use the teacher schedule with a set percentage, an SLP stipend or a higher starting step.
+      Per hour on site, <b data-source="summary" data-field="top_hour_district" data-row="0" class="dash-skeleton">—</b> pays the most at the top of the schedule, <b data-source="summary" data-field="top_hour" data-row="0" class="dash-skeleton">—</b> an hour, among the <b data-source="summary" data-field="hours_n" data-row="0" class="dash-skeleton">—</b> districts where the length of the SLP day is known.
     </p>
     <p class="slp-lede" style="font-size:var(--cds-font-size-caption)">Last updated November 3, 2026 · <a class="slp-dl" href="oc_slp_pay.csv" download>Download the data (CSV)</a></p>
   </header>
@@ -180,6 +181,11 @@ a { color: inherit; }
       <span class="slp-tile-note">Like Irvine's "Super Max": top plus every credential, license and degree stipend. Highest: <b data-source="summary" data-field="max_all_district" data-row="0" class="dash-skeleton">—</b></span>
     </div>
     <div class="slp-tile">
+      <span class="slp-tile-label">Highest top pay per hour</span>
+      <span class="slp-tile-value dash-skeleton" data-source="summary" data-field="top_hour" data-row="0">—</span>
+      <span class="slp-tile-note"><b data-source="summary" data-field="top_hour_district" data-row="0" class="dash-skeleton">—</b>, on a <b data-source="summary" data-field="top_hour_hours" data-row="0" class="dash-skeleton">—</b>-hour day. Top of schedule ÷ work days ÷ hours on site a day</span>
+    </div>
+    <div class="slp-tile">
       <span class="slp-tile-label">Highest start</span>
       <span class="slp-tile-value dash-skeleton" data-source="summary" data-field="highest_start" data-row="0">—</span>
       <span class="slp-tile-note dash-skeleton" data-source="summary" data-field="highest_start_district" data-row="0">—</span>
@@ -197,6 +203,7 @@ a { color: inherit; }
       <div class="slp-seg" role="group" aria-label="Chart units">
         <button type="button" data-view="annual" aria-pressed="true">Annual pay</button>
         <button type="button" data-view="perday" aria-pressed="false">Pay per work day</button>
+        <button type="button" data-view="perhour" aria-pressed="false">Pay per hour</button>
       </div>
       <div class="slp-seg slp-sort" role="group" aria-label="Sort the chart by">
         <span class="slp-ctl">Sort by</span>
@@ -235,6 +242,7 @@ a { color: inherit; }
         <li><b>SLP stipend</b> counts only pay every credentialed SLP gets: Irvine's credential and master's stipends, Santa Ana's stipend tied to Class III step 8, Capistrano's master's and SLP stipends (built into its schedule), Tustin's master's stipend and Los Alamitos's ASHA allowance.</li>
         <li><b>Max with all stipends</b> adds every stipend tied to something an SLP can hold, such as a doctorate, CCC, state license or National Board certification. Stipends that depend on the assignment (bilingual, coordinator, supervising fellows) are left out. Irvine and Tustin publish this figure as a "Super Max".</li>
         <li><b>Per day</b> divides pay by the district's work days, since work years range from 184 to 191 days.</li>
+        <li><b>Per hour</b> divides pay by work days and by the hours on site a day, not counting lunch: Tustin 7.5, Capistrano, Irvine and Laguna Beach 7, and Santa Ana 6.5. Irvine and Laguna Beach set 35 hours a week on site, counted as 7 a day, and don't say whether lunch is part of it. Santa Ana's contract sets no number; 6.5 hours is its flexible duty day as worked. The other contracts tie the SLP day to the student schedule without a set length, so they're left out of this view.</li>
         <li>Figures come from district salary schedules and union contracts. Every district with a current schedule was checked a second time against its source document.</li>
       </ul>
     </section>
@@ -259,6 +267,9 @@ a { color: inherit; }
           <th data-field="max_all_basis"><button type="button" data-k="max_all_basis">How the max adds up</button></th>
           <th class="num" data-field="days"><button type="button" data-k="days" data-num="1">Days</button></th>
           <th class="num" data-field="start_per_day"><button type="button" data-k="start_per_day" data-num="1">Start per day</button></th>
+          <th class="num" data-field="hours_per_day"><button type="button" data-k="hours_per_day" data-num="1">Hours a day</button></th>
+          <th class="num" data-field="start_per_hour"><button type="button" data-k="start_per_hour" data-num="1">Start per hour</button></th>
+          <th class="num" data-field="top_per_hour"><button type="button" data-k="top_per_hour" data-num="1">Top per hour</button></th>
           <th data-field="schedule_detail"><button type="button" data-k="schedule_detail">Schedule detail</button></th>
           <th data-field="addon_note"><button type="button" data-k="addon_note">SLP stipend basis</button></th>
           <th data-field="other_stipends"><button type="button" data-k="other_stipends">Other stipends</button></th>
@@ -279,7 +290,7 @@ a { color: inherit; }
       <p>This compares pay for school-based speech-language pathologists with a master's degree across Orange County's 12 unified (K-12) school districts. It was compiled in October 2026 from each district's posted certificated salary schedules and union contracts.</p>
       <p>It is not an official district or union document. Schedules change when contracts settle, and several districts were still negotiating 2026-27 raises when this was compiled. Confirm current pay, step placement and stipends with the district's human resources office before relying on a figure.</p>
       <p>Caseload caps and duty days come from each district's current teachers' or pupil-services contract. Where a contract sets no number, state law applies: Education Code 56363.3 caps a language, speech and hearing specialist's caseload at an average of 55, and 56441.7 at 40 for preschool-only caseloads, unless a waiver is granted. "Not readable yet" means the contract couldn't be read and is still being checked.</p>
-      <p>Annual figures are for each district's own work year, which ranges from 184 to 191 days. Use "Pay per work day" to compare across different work years.</p>
+      <p>Annual figures are for each district's own work year, which ranges from 184 to 191 days. Use "Pay per work day" to compare across different work years, and "Pay per hour" to compare districts whose contracts set the length of the SLP day.</p>
     </div>
   </section>
 
@@ -304,13 +315,16 @@ dash.calc('summary', {
     const byTop = cur.slice().sort((a, b) => b.top_with_addon - a.top_with_addon);
     const byMax = cur.slice().sort((a, b) => b.max_all - a.max_all);
     const mx = cur.map(r => +r.max_all).sort((a, b) => a - b);
+    const byHour = cur.filter(r => r.hours_per_day).sort((a, b) => b.top_per_hour - a.top_per_hour);
     return [{
       current_n: cur.length, total_n: pay.length,
       median_start: med(s), median_top: med(t),
       min_start: s[0], max_start: s[s.length - 1], min_top: t[0], max_top: t[t.length - 1],
       highest_start: +byStart[0].start_with_addon, highest_start_district: byStart[0].district,
       own_n: pay.filter(r => r.schedule_type === 'Own SLP schedule').length,
-      median_max_all: med(mx), max_all_district: byMax[0].district
+      median_max_all: med(mx), max_all_district: byMax[0].district,
+      hours_n: byHour.length, top_hour: byHour.length ? +byHour[0].top_per_hour : null,
+      top_hour_district: byHour.length ? byHour[0].district : '—', top_hour_hours: byHour.length ? byHour[0].hours_per_day : '—'
     }];
   }
 });
@@ -356,7 +370,7 @@ dash.calc('by_type', {
     const els = document.querySelectorAll('[data-source="summary"]');
     if (s.status !== 'ok' || !s.data || !s.data[0]) { els.forEach(el => { el.textContent = '—'; }); return; }
     const r = s.data[0];
-    const plain = new Set(['current_n', 'total_n', 'own_n', 'highest_start_district', 'max_all_district']);
+    const plain = new Set(['current_n', 'total_n', 'own_n', 'highest_start_district', 'max_all_district', 'hours_n', 'top_hour_district', 'top_hour_hours']);
     els.forEach(el => {
       const f = el.getAttribute('data-field');
       const v = r[f];
@@ -407,7 +421,9 @@ dash.calc('by_type', {
       btn.append(t, n); box.appendChild(btn);
     });
     const note = document.getElementById('filtered-note');
-    note.textContent = group === 'All' ? '' : 'Chart and table show one group. Headline figures cover every district.';
+    const { view } = P();
+    note.textContent = [group === 'All' ? '' : 'Chart and table show one group. Headline figures cover every district.',
+      view === 'perhour' ? 'Per hour shows only districts whose contract sets the length of the SLP day.' : ''].filter(Boolean).join(' ');
   });
   document.getElementById('group-chips').addEventListener('click', e => {
     const btn = e.target.closest('button[data-group]');
@@ -419,7 +435,7 @@ dash.calc('by_type', {
     const { view, sort } = P();
     document.querySelectorAll('.slp-seg button[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
     document.querySelectorAll('.slp-seg button[data-sort]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sort === sort)));
-    document.getElementById('range-title').textContent = view === 'perday' ? 'Starting to top pay per work day, by district' : 'Starting to top pay, by district';
+    document.getElementById('range-title').textContent = view === 'perday' ? 'Starting to top pay per work day, by district' : view === 'perhour' ? 'Starting to top pay per hour on site, by district' : 'Starting to top pay, by district';
   });
 
   // ---------- structure mix ----------
@@ -456,16 +472,16 @@ dash.calc('by_type', {
     wrap.classList.remove('dash-skeleton');
 
     const { group, view, focus, sort } = P();
-    const perDay = view === 'perday';
-    const rows = p.data.filter(r => isNum(r.start) && isNum(r.top) && (group === 'All' || r.schedule_type === group) && (!perDay || isNum(r.days)))
+    const perDay = view === 'perday', perHour = view === 'perhour';
+    const rows = p.data.filter(r => isNum(r.start) && isNum(r.top) && (group === 'All' || r.schedule_type === group) && (!(perDay || perHour) || isNum(r.days)) && (!perHour || isNum(r.hours_per_day)))
       .map(r => {
-        const dv = perDay ? +r.days : 1;
+        const dv = perHour ? +r.days * +r.hours_per_day : perDay ? +r.days : 1;
         const t = +r.top_with_addon;
         return { ...r, s0: +r.start / dv, s: +r.start_with_addon / dv, t: t / dv, add: isNum(r.slp_addon) ? +r.slp_addon : 0, mx: (isNum(r.max_all) ? Math.max(+r.max_all, t) : t) / dv };
       })
       .sort((a, b) => sort === 'top' ? b.t - a.t : sort === 'max' ? b.mx - a.mx : b.s - a.s);
     if (!rows.length) { wrap.style.minHeight = '4rem'; return; }
-    const kfmt = perDay ? (v => '$' + d3.format(',.0f')(v)) : kfmtK;
+    const kfmt = (perDay || perHour) ? (v => '$' + d3.format(',.0f')(v)) : kfmtK;
     const W = Math.max(280, wrap.clientWidth);
     const narrow = W < 560;
     const rowH = 26;
@@ -482,7 +498,7 @@ dash.calc('by_type', {
     svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
     wrap.style.minHeight = H + 'px';
 
-    const unit = perDay ? 50 : 10000;
+    const unit = perHour ? 10 : perDay ? 50 : 10000;
     const lo = Math.floor(d3.min(rows, r => Math.min(r.s, r.s0)) * 0.95 / unit) * unit;
     const hi = Math.ceil(d3.max(rows, r => r.mx) / unit) * unit;
     const x = d3.scaleLinear([lo, hi], [m.left + (narrow ? 4 : 50), W - m.right]);
@@ -524,11 +540,11 @@ dash.calc('by_type', {
       tip.innerHTML = '';
       const add = (cls, txt) => { const d = document.createElement('div'); if (cls) d.className = cls; d.textContent = txt; tip.appendChild(d); };
       add('h', `${r.district} · ${r.year}`);
-      const f = perDay ? (v => '$' + d3.format(',.0f')(v) + ' a day') : money;
-      add('', `Start ${f(r.s)}${r.add && !perDay ? ` (base ${money(r.s0)} + ${money(r.add)})` : ''}`);
+      const f = perHour ? (v => '$' + d3.format(',.0f')(v) + ' an hour') : perDay ? (v => '$' + d3.format(',.0f')(v) + ' a day') : money;
+      add('', `Start ${f(r.s)}${r.add && !perDay && !perHour ? ` (base ${money(r.s0)} + ${money(r.add)})` : ''}`);
       add('', `Top ${f(r.t)}`);
       if (r.mx > r.t) add('', `Max with all stipends ${f(r.mx)}`);
-      add('', `${r.schedule_type}${r.days ? ` · ${r.days} days` : ''}`);
+      add('', `${r.schedule_type}${r.days ? ` · ${r.days} days` : ''}${r.hours_per_day ? ` · ${r.hours_per_day} hrs a day` : ''}`);
       tip.hidden = false;
       const [px, py] = d3.pointer(ev, wrap);
       const tw = tip.offsetWidth;
@@ -547,7 +563,7 @@ dash.calc('by_type', {
   function cellText(k, v) {
     if (v === null || v === undefined || v === '') return '—';
     if (moneyCols.has(k)) return money(v);
-    if (k === 'start_per_day') return '$' + d3.format(',.0f')(+v);
+    if (k === 'start_per_day' || k === 'start_per_hour' || k === 'top_per_hour') return '$' + d3.format(',.0f')(+v);
     return String(v);
   }
 
